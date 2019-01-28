@@ -1,12 +1,47 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import {Container, injectable, inject} from 'inversify';
+import 'reflect-metadata';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+let container: Container = new Container();
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const KatanaType: symbol = Symbol();
+const ShurikenType: symbol = Symbol();
+const NinjaType: symbol = Symbol();
+
+@injectable()
+class Katana {
+    public hit() {
+        return 'cut!';
+    }
+}
+
+@injectable()
+class Shuriken {
+    public throw() {
+        return 'hit!';
+    }
+}
+
+@injectable()
+class Ninja {
+
+    public constructor(
+        @inject(KatanaType) private katana: Katana,
+        @inject(ShurikenType) private shuriken: Shuriken,
+    ) {
+    }
+
+    public fight() {
+        return this.katana.hit();
+    }
+
+    public sneak() {
+        return this.shuriken.throw();
+    }
+
+}
+
+container.bind<Katana>(KatanaType).to(Katana).inSingletonScope();
+container.bind<Shuriken>(ShurikenType).to(Shuriken).inSingletonScope();
+container.bind<Ninja>(NinjaType).to(Ninja).inSingletonScope();
+
+container.get(NinjaType);
