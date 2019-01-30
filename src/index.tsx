@@ -24,11 +24,8 @@ class Shuriken {
 @injectable()
 class Ninja {
 
-    public constructor(
-        @inject(KatanaType) private katana: Katana,
-        @inject(ShurikenType) private shuriken: Shuriken,
-    ) {
-    }
+    @inject(KatanaType) private katana: Katana;
+    @inject(ShurikenType) private shuriken: Shuriken;
 
     public fight() {
         return this.katana.hit();
@@ -44,4 +41,6 @@ container.bind<Katana>(KatanaType).to(Katana).inSingletonScope();
 container.bind<Shuriken>(ShurikenType).to(Shuriken).inSingletonScope();
 container.bind<Ninja>(NinjaType).to(Ninja).inSingletonScope();
 
-container.get(NinjaType);
+const ninja = container.get<Ninja>(NinjaType);
+
+console.log(ninja.fight());
