@@ -1,5 +1,5 @@
-import {Container, injectable, inject} from 'inversify';
-import 'reflect-metadata';
+import { Container, injectable, inject } from "inversify";
+import "reflect-metadata";
 
 let container: Container = new Container();
 
@@ -9,37 +9,46 @@ const NinjaType: symbol = Symbol();
 
 @injectable()
 class Katana {
-    public hit() {
-        return 'cut!';
-    }
+  public hit() {
+    return "cut!";
+  }
 }
 
 @injectable()
 class Shuriken {
-    public throw() {
-        return 'hit!';
-    }
+  public throw() {
+    return "hit!";
+  }
 }
 
 @injectable()
 class Ninja {
+  constructor(
+    @inject(KatanaType) private katana: Katana,
+    @inject(ShurikenType) private shuriken: Shuriken
+  ) {}
 
-    @inject(KatanaType) private katana: Katana;
-    @inject(ShurikenType) private shuriken: Shuriken;
+  public fight() {
+    return this.katana.hit();
+  }
 
-    public fight() {
-        return this.katana.hit();
-    }
-
-    public sneak() {
-        return this.shuriken.throw();
-    }
-
+  public sneak() {
+    return this.shuriken.throw();
+  }
 }
 
-container.bind<Katana>(KatanaType).to(Katana).inSingletonScope();
-container.bind<Shuriken>(ShurikenType).to(Shuriken).inSingletonScope();
-container.bind<Ninja>(NinjaType).to(Ninja).inSingletonScope();
+container
+  .bind<Katana>(KatanaType)
+  .to(Katana)
+  .inSingletonScope();
+container
+  .bind<Shuriken>(ShurikenType)
+  .to(Shuriken)
+  .inSingletonScope();
+container
+  .bind<Ninja>(NinjaType)
+  .to(Ninja)
+  .inSingletonScope();
 
 const ninja = container.get<Ninja>(NinjaType);
 
